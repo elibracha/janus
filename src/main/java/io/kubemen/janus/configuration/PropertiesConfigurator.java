@@ -1,0 +1,4 @@
+package io.kubemen.janus.configuration;
+
+public interface PropertiesConfigurator {
+}
