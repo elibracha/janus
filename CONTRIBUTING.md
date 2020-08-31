@@ -2,16 +2,15 @@
 
 ## Before submitting an issue
 
- - If you're not using the latest master to parse Ignore file, please give it another try by pulling the latest master as the issue may have already been addressed. Ref: [Getting Started](https://github.com/elibracha/openapi-diff-ignore)
- - Search the [open issue](https://github.com/elibracha/openapi-diff-ignore/issues) and [closed issue](https://github.com/elibracha/openapi-diff-ignore/issues) to ensure no one else has reported something similar before.
- - File an [issue ticket](https://github.com/elibracha/openapi-diff-ignore/issues/new) by providing all the required information.
+ - Search the [open issue](https://github.com/elibracha/janus/issues) and [closed issue](https://github.com/elibracha/janus/issues) to ensure no one else has reported something similar before.
+ - File an [issue ticket](https://github.com/elibracha/janus/issues/new) by providing all the required information.
  - Test with the latest master by building the JAR locally to see if the issue has already been addressed.
  - You can also make a suggestion or ask a question by opening an "issue".
 
 ## Before submitting a PR
 
- - Search the [open issue](https://github.com/elibracha/openapi-diff-ignore/issues) to ensure no one else has reported something similar and no one is actively working on similar proposed change.
- - If no one has suggested something similar, open an ["issue"](https://github.com/elibracha/openapi-diff-ignore/issues) with your suggestion to gather feedback from the community.
+ - Search the [open issue](https://github.com/elibracha/janus/issues) to ensure no one else has reported something similar and no one is actively working on similar proposed change.
+ - If no one has suggested something similar, open an ["issue"](https://github.com/elibracha/janus/issues) with your suggestion to gather feedback from the community.
  - It's recommended to **create a new git branch** for the change so that the merge commit message looks nicer in the commit history.
 
 ## How to contribute
@@ -24,7 +23,6 @@ Code change should conform to the programming style guide of the respective lang
 For other languages, feel free to suggest.
 ### Tips
 - Smaller changes are easier to review
-- [Optional] For bug fixes, provide a OpenAPI Ignore Spec to repeat the issue so that the reviewer can use it to confirm the fix
 - Add test case(s) to cover the change
 - Document the fix in the code to make the code more readable
 - Make sure test cases passed after the change (one way is to leverage https://travis-ci.org/ to run the CI tests)
