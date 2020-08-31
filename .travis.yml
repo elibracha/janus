@@ -1,0 +1,13 @@
+dist: xenial
+
+language: java
+
+jdk:
+  - openjdk8
+  - openjdk11
+
+install:
+  - mvn install -Dmaven.javadoc.skip=true -B -V -U
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
