@@ -1,4 +1,4 @@
 package io.kubemen.janus.exceptions;
 
-public class PlatformFailedPullImageException extends Exception{
+public class PlatformFailedPullImageException extends Exception {
 }

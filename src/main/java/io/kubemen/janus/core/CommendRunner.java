@@ -9,5 +9,5 @@ public interface CommendRunner {
 
     String run(CommendConfig config) throws ImageNameMissingException, PlatformFailedException, PlatformFailedPullImageException;
 
-    boolean stop (String id);
+    boolean stop(String id);
 }

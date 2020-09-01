@@ -12,8 +12,10 @@ import io.kubemen.janus.exceptions.ImageNameMissingException;
 import io.kubemen.janus.exceptions.PlatformFailedException;
 import io.kubemen.janus.exceptions.PlatformFailedPullImageException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class DockerCommendRunner implements CommendRunner {
 
@@ -32,19 +34,19 @@ public class DockerCommendRunner implements CommendRunner {
 
         boolean pulled = pull(image, config);
 
-        if(!pulled)
+        if (!pulled)
             throw new PlatformFailedPullImageException();
 
         String created = run(image, config);
         return Optional.ofNullable(created).orElseThrow(PlatformFailedException::new);
     }
 
-    public boolean stop (String id){
+    public boolean stop(String id) {
         dockerClient.killContainerCmd(id).exec();
         return true;
     }
 
-    private boolean pull(String image, CommendConfig config){
+    private boolean pull(String image, CommendConfig config) {
         try {
             PullImageCmd cmd = dockerClient.pullImageCmd(image);
             String tag = Optional.ofNullable(config.getTag()).orElse(DEFAULT_TAG);
@@ -59,7 +61,7 @@ public class DockerCommendRunner implements CommendRunner {
         }
     }
 
-    private String run(String image, CommendConfig config){
+    private String run(String image, CommendConfig config) {
         StringBuilder fullImageName = new StringBuilder();
         String tag = Optional.ofNullable(config.getTag()).orElse(DEFAULT_TAG);
 
@@ -69,14 +71,19 @@ public class DockerCommendRunner implements CommendRunner {
             CreateContainerCmd cmd = dockerClient.createContainerCmd(fullImageName.toString());
 
             Optional.ofNullable(config.getPortForwarding())
-                    .ifPresent(ports ->
-                            ports.forEach(port -> cmd.withPortBindings(PortBinding.parse(port)))
-                    );
+                    .ifPresent(ports -> {
+                        List<PortBinding> portsBindings = ports.stream()
+                                .map(PortBinding::parse)
+                                .collect(Collectors.toList());
+                        cmd.withPortBindings(portsBindings);
+                    });
+
+            Optional.ofNullable(config.getEnv()).ifPresent(cmd::withEnv);
 
             String id = cmd.exec().getId();
             dockerClient.startContainerCmd(id).exec();
             return id;
-        } catch (NotFoundException | ConflictException e){
+        } catch (NotFoundException | ConflictException e) {
             e.printStackTrace();
             return null;
         }

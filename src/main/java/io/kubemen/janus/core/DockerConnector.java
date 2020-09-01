@@ -4,13 +4,13 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 
-public class DockerConnector implements Connector{
+public class DockerConnector implements Connector {
 
-    public DockerConnector configure(){
+    public DockerConnector configure() {
         return this;
     }
 
-    public DockerClient connect(){
+    public DockerClient connect() {
         DefaultDockerClientConfig.Builder config
                 = DefaultDockerClientConfig.createDefaultConfigBuilder();
 
