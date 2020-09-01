@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Provide {
     public String image() default "";
     public String tag() default "latest";
+    public String[] portForwarding() default {};
 }

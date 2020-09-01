@@ -12,6 +12,9 @@ import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ContainerExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private PlatformManager platformManager;
@@ -28,10 +31,15 @@ public class ContainerExtension implements BeforeTestExecutionCallback, AfterTes
             if(isPresent){
                 String image = e.getAnnotation(Provide.class).image();
                 String tag = e.getAnnotation(Provide.class).tag();
+                List<String> portForwarding = Arrays.asList(e.getAnnotation(Provide.class).portForwarding());
 
                 CommendConfig commendConfig = new CommendConfig();
-                commendConfig.setImage(image);
-                commendConfig.setTag(tag);
+                if(!image.isBlank())
+                    commendConfig.setImage(image);
+                if(!tag.isBlank())
+                    commendConfig.setTag(tag);
+                if(!portForwarding.isEmpty())
+                    commendConfig.setPortForwarding(portForwarding);
 
                 this.platformManager = new DockerPlatformManager(new DockerConnector().connect());
 

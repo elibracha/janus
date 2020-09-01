@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class DockerPlatformTest {
 
     @Test
-    @Provide(image = "mongo", tag = "4.2.9")
+    @Provide(image = "mongo", tag = "4.2.9", portForwarding = {"27017:27017"})
     public void DockerCreateImageTest() {
         System.out.println("this is a test!!!");
     }
