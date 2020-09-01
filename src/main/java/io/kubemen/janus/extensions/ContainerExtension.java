@@ -18,9 +18,7 @@ public class ContainerExtension implements BeforeTestExecutionCallback, AfterTes
 
     @Override
     public void afterTestExecution(ExtensionContext extensionContext) throws Exception {
-        System.out.println("Deleting Containers...");
         platformManager.stop();
-        System.out.println("Deleted Containers.");
     }
 
     @Override
@@ -38,7 +36,6 @@ public class ContainerExtension implements BeforeTestExecutionCallback, AfterTes
                 this.platformManager = new DockerPlatformManager(new DockerConnector().connect());
 
                 try {
-                    System.out.println("Loading Image & Container...");
                     platformManager.run(commendConfig);
                 } catch (ImageNameMissingException | PlatformFailedException |
                         PlatformFailedPullImageException ex) {
