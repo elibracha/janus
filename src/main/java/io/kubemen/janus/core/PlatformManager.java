@@ -2,8 +2,12 @@ package io.kubemen.janus.core;
 
 import io.kubemen.janus.domain.CommendConfig;
 import io.kubemen.janus.exceptions.ImageNameMissingException;
+import io.kubemen.janus.exceptions.PlatformFailedException;
+import io.kubemen.janus.exceptions.PlatformFailedPullImageException;
 
 public interface PlatformManager {
 
-    boolean run(CommendConfig config) throws ImageNameMissingException;
+    void run(CommendConfig config) throws ImageNameMissingException, PlatformFailedException, PlatformFailedPullImageException;
+
+    void stop();
 }
