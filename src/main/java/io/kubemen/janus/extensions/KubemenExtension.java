@@ -6,29 +6,50 @@ import io.kubemen.janus.core.DockerConnector;
 import io.kubemen.janus.core.DockerPlatformManager;
 import io.kubemen.janus.core.PlatformManager;
 import io.kubemen.janus.domain.CommendConfig;
+import io.kubemen.janus.domain.KubemenScope;
 import io.kubemen.janus.exceptions.ImageNameMissingException;
 import io.kubemen.janus.exceptions.PlatformFailedException;
 import io.kubemen.janus.exceptions.PlatformFailedPullImageException;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class KubemenExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
+public class KubemenExtension implements AfterAllCallback, TestInstancePostProcessor,
+        BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
-    private PlatformManager platformManager;
-
-    @Override
-    public void afterTestExecution(ExtensionContext extensionContext) {
-        platformManager.stop();
-    }
+    private static PlatformManager platformManager;
 
     @Override
     public void beforeTestExecution(ExtensionContext extensionContext) {
-        this.platformManager = new DockerPlatformManager(new DockerConnector().connect());
+        if (KubemenExtension.platformManager == null)
+            KubemenExtension.platformManager = new DockerPlatformManager(new DockerConnector().connect());
 
+        processKubemen(extensionContext, KubemenScope.METHOD);
+
+    }
+
+    @Override
+    public void postProcessTestInstance(Object o, ExtensionContext extensionContext) {
+        KubemenExtension.platformManager = new DockerPlatformManager(new DockerConnector().connect());
+        processKubemen(extensionContext, KubemenScope.CLASS);
+    }
+
+    @Override
+    public void afterTestExecution(ExtensionContext extensionContext) {
+        killKubemen(KubemenScope.METHOD);
+    }
+
+    @Override
+    public void afterAll(ExtensionContext extensionContext) {
+        killKubemen(KubemenScope.CLASS);
+    }
+
+    private void killKubemen(KubemenScope method){
+        platformManager.stop(method);
+    }
+
+    private void processKubemen(ExtensionContext extensionContext, KubemenScope method){
         extensionContext.getElement().ifPresent(e -> {
             boolean isProviderPresent = e.isAnnotationPresent(Provide.class);
             boolean isProvidersPresent = e.isAnnotationPresent(Kubemen.class);
@@ -38,23 +59,23 @@ public class KubemenExtension implements BeforeTestExecutionCallback, AfterTestE
                         p.image(),
                         p.tag(),
                         Arrays.asList(p.portForwarding()),
-                        Arrays.asList(p.env())
+                        Arrays.asList(p.env()),
+                        method
                 ));
-            } else if (isProviderPresent) {
+            } if (isProviderPresent) {
                 processProvide(
                         e.getAnnotation(Provide.class).image(),
                         e.getAnnotation(Provide.class).tag(),
                         Arrays.asList(e.getAnnotation(Provide.class).portForwarding()),
-                        Arrays.asList(e.getAnnotation(Provide.class).env())
+                        Arrays.asList(e.getAnnotation(Provide.class).env()),
+                        method
                 );
             }
         });
     }
 
-    private void processProvide(String image,
-                                String tag,
-                                List<String> portForwarding,
-                                List<String> envs) {
+    private void processProvide(String image, String tag,
+                                List<String> portForwarding, List<String> envs, KubemenScope method) {
 
         CommendConfig commendConfig = new CommendConfig();
         if (!image.isBlank())
@@ -67,7 +88,7 @@ public class KubemenExtension implements BeforeTestExecutionCallback, AfterTestE
             commendConfig.setEnv(envs);
 
         try {
-            platformManager.run(commendConfig);
+            platformManager.run(commendConfig, method);
         } catch (ImageNameMissingException | PlatformFailedException |
                 PlatformFailedPullImageException ex) {
             ex.printStackTrace();
