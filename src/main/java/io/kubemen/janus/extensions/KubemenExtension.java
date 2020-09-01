@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.util.Arrays;
 import java.util.List;
 
-public class ContainerExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
+public class KubemenExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private PlatformManager platformManager;
 
@@ -33,7 +33,7 @@ public class ContainerExtension implements BeforeTestExecutionCallback, AfterTes
             boolean isProviderPresent = e.isAnnotationPresent(Provide.class);
             boolean isProvidersPresent = e.isAnnotationPresent(Kubemen.class);
             if (isProvidersPresent) {
-                Provide[] providers = e.getAnnotation(Kubemen.class).providers();
+                Provide[] providers = e.getAnnotation(Kubemen.class).provides();
                 Arrays.asList(providers).forEach(p -> processProvide(
                         p.image(),
                         p.tag(),
