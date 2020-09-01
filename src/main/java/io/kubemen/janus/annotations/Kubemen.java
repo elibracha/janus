@@ -7,12 +7,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Provide {
-    public String image() default "";
-
-    public String tag() default "latest";
-
-    public String[] portForwarding() default {};
-
-    public String[] env() default {};
+public @interface Kubemen {
+    public Provide[] providers() default {};
 }

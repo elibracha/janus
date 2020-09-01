@@ -25,7 +25,7 @@ public class DockerPlatformManager implements PlatformManager {
         runningContainers.add(id);
     }
 
-    public void stop(){
+    public void stop() {
         runningContainers.forEach(commendRunner::stop);
     }
 }
