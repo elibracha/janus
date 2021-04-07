@@ -1,3 +1,3 @@
 # janus
 
-Janus is a library you can use to use annotations to span up a docker image and test against it.
+Janus is a set of pre-implemented annotations you can use to span up a docker image of a service and test against it.
